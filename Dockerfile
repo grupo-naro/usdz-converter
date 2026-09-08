@@ -6,7 +6,7 @@
 # que expone `POST /convert`.
 #
 # La base trae `usd_from_gltf` en el PATH y Python 3.
-FROM leon/gltf-to-usdz:latest
+FROM leon/usd-from-gltf:latest
 
 # Anula el ENTRYPOINT de la base (que es el binario `usd_from_gltf`).
 ENTRYPOINT []
