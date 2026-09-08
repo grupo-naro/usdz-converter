@@ -31,6 +31,12 @@ class Handler(BaseHTTPRequestHandler):
     def _send(self, code, body=b"", content_type="text/plain; charset=utf-8"):
         if isinstance(body, str):
             body = body.encode("utf-8")
+        # En los caminos de rechazo (401/413/400/404) hacemos return sin leer el
+        # body del request; con HTTP/1.1 keep-alive esos bytes sin leer corrompen
+        # el request siguiente en la conexión upstream que reusa el tunnel.
+        # Forzar el cierre de la conexión en cualquier error lo evita.
+        if code >= 400:
+            self.close_connection = True
         self.send_response(code)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
